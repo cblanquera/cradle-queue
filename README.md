@@ -79,3 +79,15 @@ With the other terminal, go to your project directory and run `php worker.php`
 
 Then go to your browser and visit `http://localhost/queue`. You should see the worker
 get updated and echoing `Sending Mail`.
+
+You can also run the task manually in the CLI with the following.
+
+```
+$ vendor/bin/cradle cblanquera/cradle-queue job "Sending Mail"
+```
+
+You can also queue the task manually in the CLI with the following.
+
+```
+$ vendor/bin/cradle cblanquera/cradle-queue queue "Sending Mail"
+```
