@@ -22,7 +22,10 @@ return function($cwd, $args) {
     $this->prepare();
 
     //now queue
-    $this->package('global')->queue($args[3], $data);
+    $this
+        ->package('global')
+        ->service('queue-main')
+        ->queue($args[3], $data);
 
     CLI::success('`'.$args[3].'` has been successfully queued.');
 };
