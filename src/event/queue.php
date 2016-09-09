@@ -24,7 +24,6 @@ return function($cwd, $args) {
     //now queue
     $this
         ->package('global')
-        ->service('queue-main')
         ->queue($args[3], $data);
 
     CLI::success('`'.$args[3].'` has been successfully queued.');
