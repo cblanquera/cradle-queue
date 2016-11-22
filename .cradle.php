@@ -50,10 +50,19 @@ use ($cradle)
 
     //get the channel
     if(is_null($channel)) {
-        $channel = $cradle
-            ->package('global')
-            ->service('queue-main')
-            ->channel();
+        $service = $cradle->package('global')->service('queue-main');
+
+        if(!$service) {
+            return false;
+        }
+
+        try {
+            $channel = $service->channel();
+        } catch(Throwable $e) {
+            return false;
+        } catch(Exception $e) {
+            return false;
+        }
     }
 
     //get the queue name
