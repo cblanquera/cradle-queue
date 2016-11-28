@@ -42,7 +42,8 @@ $cradle->on('Rabbit Queue %s', function($request, $response) {
 $cradle->package('global')->addMethod('queue', function(
     $task = null,
     $data = array(),
-    $priority = 'low'
+    $priority = 'low',
+    $delay = false
 )
 use ($cradle)
 {
@@ -90,14 +91,35 @@ use ($cradle)
         )
     );
 
-     // set message
-    $message = new AMQPMessage(
-        json_encode($data),
-        array(
-            'priority' => $priority,
-            'delivery_mode' => 2
-        )
+    $options = array(
+        'priority' => $priority,
+        'delivery_mode' => 2
     );
+
+    if($delay) {
+        $options['x-delay'] = $delay * 1000;
+    }
+
+     // set message
+    $message = new AMQPMessage(json_encode($data), $options);
+
+    if($delay) {
+        $this->channel->exchange_declare('xchnge-delay',
+            'x-delayed-message',
+            false,  /* passive, create if exchange doesn't exist */
+            true,   /* durable, persist through server reboots */
+            false,  /* autodelete */
+            false,  /* internal */
+            false,  /* nowait */
+            ['x-delayed-type' => ['S', 'direct']]);
+
+        $this->channel->queue_bind($name, 'xchnge-delay', 'delay_route');
+
+        // queue it up on delay container
+        $this->channel->basic_publish($message, 'xchnge-delay', 'delay_route');
+
+        return $this;
+    }
 
     $channel->exchange_declare($name.'-xchnge', 'direct');
     $channel->queue_bind($name, $name.'-xchnge');
