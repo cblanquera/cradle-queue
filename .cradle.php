@@ -51,7 +51,7 @@ use ($cradle)
 
     //get the channel
     if(is_null($channel)) {
-        $service = $cradle->package('global')->service('queue-main');
+        $service = $cradle->package('global')->service('rabbitmq-main');
 
         if(!$service) {
             return false;
