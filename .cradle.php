@@ -104,7 +104,8 @@ use ($cradle)
     $message = new AMQPMessage(json_encode($data), $options);
 
     if($delay) {
-        $this->channel->exchange_declare('xchnge-delay',
+        $this->channel->exchange_declare(
+            $name . '-xchnge-delay',
             'x-delayed-message',
             false,  /* passive, create if exchange doesn't exist */
             true,   /* durable, persist through server reboots */
@@ -113,10 +114,10 @@ use ($cradle)
             false,  /* nowait */
             ['x-delayed-type' => ['S', 'direct']]);
 
-        $this->channel->queue_bind($name, 'xchnge-delay', 'delay_route');
+        $this->channel->queue_bind($name, $name . '-xchnge-delay', 'delay_route');
 
         // queue it up on delay container
-        $this->channel->basic_publish($message, 'xchnge-delay', 'delay_route');
+        $this->channel->basic_publish($message, $name . '-xchnge-delay', 'delay_route');
 
         return $this;
     }
