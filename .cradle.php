@@ -3,6 +3,7 @@
 use Cradle\Framework\Flow;
 use Cradle\Framework\Queue\Controller;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 Flow::register('queue', function() use ($cradle) {
     static $cache = null;
@@ -87,7 +88,7 @@ use ($cradle)
         false,
         false,
         array(
-            'x-max-priority' => array('I', 10)
+            'x-max-priority' => array('I', 100)
         )
     );
 
@@ -97,7 +98,9 @@ use ($cradle)
     );
 
     if($delay) {
-        $options['x-delay'] = $delay * 1000;
+        $options['application_headers'] = new AMQPTable([
+            'x-delay' => $delay * 1000,
+        ]);
     }
 
      // set message
