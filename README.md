@@ -1,5 +1,5 @@
-# cradle-mail
-Mail Handling for Cradle with Swift Mailer
+# cradle-queue
+RabbitMQ with Fork and Exec workers. Built for the [Cradle Framework](https://cradlephp.github.io/)
 
 ## 1. Requirements
 
@@ -23,71 +23,33 @@ Then in `/bootstrap.php`, add
 Open `/config/services.php` and add
 
 ```
-use PhpAmqpLib\Connection\AMQPLazyConnection;
+'rabbitmq-main' => [
+    'host' => '127.0.0.1',
+    'port' => 5672,
+    'user' => 'guest',
+    'pass' => 'guest'
+],
 ```
 
-in the next line right after the `<?php`. Then add the following to the array.
+## 4. Methods
 
 ```
-'queue-main' => new AMQPLazyConnection('127.0.0.1', 5672, 'guest', 'guest'),
+cradle('global')->queue(*string $event, array $data);
 ```
 
-## 4. Recipes
-
-Once the database is installed open up `/public/index.php` and add the following.
+An easy way to queue.
 
 ```
-<?php
-
-use Cradle\Framework\Flow;
-
-return cradle()
-    //add routes here
-    ->get('/queue', 'Queue Pseudo Mail')
-
-    //add flows here
-    ->flow(
-        'Queue Pseudo Mail',
-        Flow::queue()->send('Send Mail')
-    );
+cradle('global')
+    ->queue()
+    ->setData(*array $data)
+    ->setDelay(*string $delay)
+    ->setPriority(*int $priority)
+    ->setQueue(*string $queueName)
+    ->setRetry(*int $retry)
+    ->send(*string $task, bool $duplicates = true);
 ```
 
-You can also express the queue step as a string like the following example.
-
-```
-->flow(
-    'Queue Pseudo Mail',
-    'Rabbit Queue Send Mail'
-)
-```
-
-Then open up `/bootstrap.php` and add the following.
-
-```
-->flow('Send Mail', function($request, $response) {
-        echo 'Sending Mail';
-})
-```
-
-## 5. CLI
-
-To see this in action you need to open up two terminals. The first one will be
-your RabbitMQ server. If your RabbitMQ server is not on you can use `$ rabbitmq-server`
-**Assuming that RabbitMQ server is installed**.
-
-With the other terminal, go to your project directory and run `php worker.php`
-
-Then go to your browser and visit `http://localhost/queue`. You should see the worker
-get updated and echoing `Sending Mail`.
-
-You can also run the task manually in the CLI with the following.
-
-```
-$ vendor/bin/cradle cblanquera/cradle-queue job "Sending Mail"
-```
-
-You can also queue the task manually in the CLI with the following.
-
-```
-$ vendor/bin/cradle cblanquera/cradle-queue queue "Sending Mail"
-```
+Returns the queue class for advance manipulation. If you want to prevent
+duplicates from entering your queue, set the `$duplicates` flag to false and
+turn on Redis (this is the only way I can figure this can happen).
