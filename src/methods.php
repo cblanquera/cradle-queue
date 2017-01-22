@@ -286,8 +286,9 @@ $cradle->package('global')->addMethod('workExec', function($queue = 'queue', $la
         $cwd = realpath(__DIR__ . '/../../../..');
 
         $command = sprintf(
-            'cd %s && bin/cradle %s%s --__worker_id=%s --__json64=\'%s\'',
+            'cd %s && %sbin/cradle %s%s --__worker_id=%s --__json64=\'%s\'',
             $cwd,
+            PHP_OS === 'Linux'? 'timeout 300 ':'',
             $info['task'],
             $verbose ? ' -v': '',
             WORKER_ID,
