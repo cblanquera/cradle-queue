@@ -27,11 +27,11 @@ class NoopService
     /**
      * Always return false
      *
-     * @param *string $type
+     * @param string $type
      *
      * @return false
      */
-    public function __construct($type)
+    public function __construct($type = null)
     {
         $this->type = $type;
     }
