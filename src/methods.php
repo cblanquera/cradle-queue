@@ -314,7 +314,7 @@ $cradle->package('global')->addMethod('workExec', function($queue = 'queue', $la
             return false;
         }
 
-        if($response->hasResults()) {
+        if(!empty($results)) {
             cradle()->log($label . ' Output:');
             cradle()->log($result);
         }
