@@ -257,7 +257,7 @@ class RabbitMQService
             $delayExchange,
             'x-delayed-message',
             false,
-            true,
+            false,
             false,
             false,
             false,

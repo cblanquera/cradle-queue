@@ -43,7 +43,7 @@ $cradle->package('global')->addMethod('queue', function($task = null, array $dat
         }
 
         return $service;
-    } else if(is_string($task)) {
+    } else if(!is_string($task)) {
         return new NoopService();
     }
 
