@@ -20,7 +20,7 @@
         "satooshi/php-coveralls": "^1.0"
     },
     "require": {
-		"cradlephp/packages": "1.1.2",
+		"cradlephp/framework": "~1.1.1",
 		"php-amqplib/php-amqplib": "^2.6"
     },
     "autoload": {
