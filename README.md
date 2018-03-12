@@ -1,3 +1,5 @@
+> Deprecation Notice: This project has been moved to https://github.com/CradlePHP/cradle-queue
+
 # cradle-queue
 RabbitMQ with Fork and Exec workers. Built for the [Cradle Framework](https://cradlephp.github.io/)
 
